@@ -29,5 +29,9 @@ add_executable(storage_node
         src/utils/src/ThreadPool.cpp
         src/utils/include/ThreadPool.hpp
         src/utils/src/Logger.cpp
-        src/utils/include/Logger.hpp)
+        src/utils/include/Logger.hpp
+        src/net/src/SocketHandle.cpp
+        src/net/include/SocketHandle.hpp
+        src/net/src/SocketFD.cpp
+        src/net/include/SocketFD.hpp)
 

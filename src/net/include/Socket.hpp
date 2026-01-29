@@ -5,24 +5,8 @@
 #include <string>
 #include <iostream>
 #include <stdexcept>
+#include "SocketHandle.hpp"
 
-#ifdef _WIN32
-
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#include <mswsock.h>
-#include <io.h>
-#include <windows.h>
-#pragma comment(lib, "Mswsock.lib")
-
-#elif __linux__
-
-#include <sys/socket.h>
-#include <sys/sendfile.h>
-#include <unistd.h>
-#include <cerrno>
-
-#endif
 
 namespace ref_storage::net {
 
@@ -35,6 +19,9 @@ namespace ref_storage::net {
 
     class Socket {
 
+        //Forward Declaration
+        struct FD;
+
     public:
 
         /* Constructor: Creates a new TCP Socket
@@ -42,11 +29,7 @@ namespace ref_storage::net {
         Socket();
 
         // Construct from an existing fd (used for a socket returned by accept)
-#ifdef _WIN32
-        explicit Socket(SOCKET fd);
-#elif __linux__
-        explicit Socket(int fd);
-#endif
+        explicit Socket(FD fd);
 
 
         // Copying is disabled (Socket is an exclusive resource), moving is allowed (Move semantics)
@@ -92,36 +75,9 @@ namespace ref_storage::net {
         void setRecvTimeout(int seconds);
 
     private:
-        /* Under Linux, it is an int, while under Windows, it is a SOCKET (uint_ptr).
-         * Therefore,we encapsulate it into a structure to reduce the use of conditional compilation. */
-        struct FD {
-#ifdef _WIN32
-            SOCKET _fd;
-            operator int() const {
-                return static_cast<int>(_fd);
-            }
-
-            FD& operator=(SOCKET other) {
-                this->_fd = other;
-            }
-
-#elif __linux__
-            int _fd;
-            operator int() const {
-                return _fd;
-            }
-
-            FD& operator=(int other) {
-                this->_fd = other;
-            }
-#endif
-        };
-
         FD _fd;
 
         //Helper Function:
-
-
     };
 
 }

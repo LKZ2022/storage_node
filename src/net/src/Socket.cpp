@@ -11,7 +11,7 @@ namespace ref_storage::net {
     Socket::Socket() {
 
         try {
-            /* In this constructor, a socket will be cretaed.
+            /* In this constructor, a socket will be created.
              * Here, we use the TCP protocol within the IPv6 address family. */
 #ifdef _WIN32
 
@@ -67,7 +67,6 @@ namespace ref_storage::net {
 
             if (_fd == INVALID_SOCKET) {
                 std::cerr << "Socket failed with error: " << WSAGetLastError() << std::endl;
-                WSACleanup();
                 throw std::runtime_error("Socket failed with error");
             }
 
@@ -78,7 +77,7 @@ namespace ref_storage::net {
                                 reinterpret_cast<const char *>(&opt), sizeof(opt));
             if (result != 0) {
                 std::cerr << "setsockopt failed with error: " << result << std::endl;
-                WSACleanup();
+                close(_fd);
                 throw std::runtime_error("setsockopt failed with error");
             }
 
@@ -90,12 +89,9 @@ namespace ref_storage::net {
         }
 
     }
-#ifdef _WIN32
-    Socket::Socket(SOCKET fd) {
-        _fd = fd;
-    }
-#elif __linux__
 
-#endif
+
+    Socket::Socket(FD fd) {
+    }
 
 }
