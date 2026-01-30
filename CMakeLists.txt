@@ -32,6 +32,5 @@ add_executable(storage_node
         src/utils/include/Logger.hpp
         src/net/src/SocketHandle.cpp
         src/net/include/SocketHandle.hpp
-        src/net/src/SocketFD.cpp
-        src/net/include/SocketFD.hpp)
+)
 
