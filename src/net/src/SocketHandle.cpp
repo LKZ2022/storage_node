@@ -11,7 +11,7 @@ namespace ref_storage::net {
 
     SocketHandle::SocketHandle() noexcept = default;
 
-    SocketHandle::SocketHandle(NativeSocketType fd) noexcept : _handle(fd) {}
+    SocketHandle::SocketHandle(NativeSocketType handle) noexcept : _handle(handle) {}
 
     SocketHandle & SocketHandle::operator=(SocketHandle &&other) noexcept {
         if (this != &other) {
@@ -42,7 +42,23 @@ namespace ref_storage::net {
     }
 
     bool SocketHandle::operator!=(const SocketHandle &other) const noexcept {
-        return !(*this == other);
+        return _handle != other._handle;
+    }
+
+    bool SocketHandle::operator<(const SocketHandle &other) const noexcept {
+        return _handle < other._handle;
+    }
+
+    bool SocketHandle::operator<=(const SocketHandle &other) const noexcept {
+        return _handle <= other._handle;
+    }
+
+    bool SocketHandle::operator>(const SocketHandle &other) const noexcept {
+        return _handle > other._handle;
+    }
+
+    bool SocketHandle::operator>=(const SocketHandle &other) const noexcept {
+        return _handle >= other._handle;
     }
 
     SocketHandle::NativeSocketType SocketHandle::release_handle() noexcept {

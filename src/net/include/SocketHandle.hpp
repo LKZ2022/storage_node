@@ -12,7 +12,7 @@
 #include <mswsock.h>
 #include <io.h>
 #include <windows.h>
-#pragma comment(lib, "Mswsock.lib")
+#pragma comment(lib, "ws2_32.lib")
 
 #elif __linux__
 
@@ -25,7 +25,7 @@
 
 namespace ref_storage::net {
 
-    /* Here, we define a C class and use conditional compilation to encapsulate SOCKET (uint_ptr) on Windows systems
+    /* Here, we define a C++ class and use conditional compilation to encapsulate SOCKET (uint_ptr) on Windows systems
      * and int (file descriptor) on Linux systems, along with their corresponding invalid values.
      * At the same time, we encapsulate functions that are frequently used and differ between Windows and Linux systems.
      * This approach can reduce the use of conditional compilation and improve portability. */
@@ -46,7 +46,7 @@ namespace ref_storage::net {
 
         explicit SocketHandle() noexcept;
         // Constructed from a native handle, requires taking ownership.
-        explicit SocketHandle(NativeSocketType fd) noexcept;
+        explicit SocketHandle(NativeSocketType handle) noexcept;
 
         // Move Constructor and Move Assignment Operator.
         SocketHandle(SocketHandle&& other) noexcept : _handle(std::exchange(other._handle, kInvalid)) {}
@@ -81,10 +81,18 @@ namespace ref_storage::net {
         // Allow comparisons within the same type.
         bool operator==(const SocketHandle& other) const noexcept;
         bool operator!=(const SocketHandle& other) const noexcept;
+        bool operator<(const SocketHandle& other) const noexcept;
+        bool operator<=(const SocketHandle& other) const noexcept;
+        bool operator>(const SocketHandle& other) const noexcept;
+        bool operator>=(const SocketHandle& other) const noexcept;
 
         // Remove comparisons with primitive types.
         bool operator==(NativeSocketType) const = delete;
         bool operator!=(NativeSocketType) const = delete;
+        bool operator<(NativeSocketType) const = delete;
+        bool operator<=(NativeSocketType) const = delete;
+        bool operator>(NativeSocketType) const = delete;
+        bool operator>=(NativeSocketType) const = delete;
 
         // Resource Management.
         NativeSocketType release_handle() noexcept;
